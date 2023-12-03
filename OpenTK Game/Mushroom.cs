@@ -25,7 +25,7 @@ public class Mushroom : GameObject
         
         Vertices = scene.Meshes[0].MergeMeshData();
         Indices = scene.Meshes[0].GetUnsignedIndices();
-        MyShader = new Shader("shader.vert", "Lit_shader.frag");
+        Shader = new Shader("shader.vert", "Lit_shader.frag");
 
         Game.LitObjects.Add(this);
         transform.Rotation = new Vector3(-MathHelper.PiOver2, 0, 0);
@@ -40,7 +40,7 @@ public class Mushroom : GameObject
     public override void Update(FrameEventArgs args)
     {
         float distance = (float) Math.Sqrt(Math.Pow(transform.Position.X - Game.gameCam.Position.X, 2) + 
-                                           Math.Pow((transform.Position.Y + 0.5f) - Game.gameCam.Position.Y, 2) +
+                                           Math.Pow(transform.Position.Y + 0.5f - Game.gameCam.Position.Y, 2) +
                                            Math.Pow(transform.Position.Z - Game.gameCam.Position.Z, 2));
 
         transform.Scale = new Vector3(MathHelper.Lerp(10, 1, distance / 3));
@@ -54,8 +54,8 @@ public class Mushroom : GameObject
     public override void Render()
     {
         background.Use(TextureUnit.Texture0);
-        int id = MyShader.GetUniformLocation("tex0");
-        GL.ProgramUniform1(MyShader.Handle, id, 0);
+        int id = Shader.GetUniformLocation("tex0");
+        GL.ProgramUniform1(Shader.Handle, id, 0);
 
         base.Render();
     }

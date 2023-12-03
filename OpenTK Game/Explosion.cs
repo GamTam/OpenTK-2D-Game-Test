@@ -24,7 +24,7 @@ public class Explosion : GameObject
     {
         Vertices = StaticUtilities.QuadVertices;
         Indices = StaticUtilities.QuadIndices;
-        MyShader = new Shader("shader.vert", "shader.frag");
+        Shader = new Shader("shader.vert", "shader.frag");
 
         Game.LitObjects.Add(this);
         transform.Position = new Vector3(0, 0, 0);
@@ -63,8 +63,8 @@ public class Explosion : GameObject
     public override void Render()
     {
         boom.Use(TextureUnit.Texture0);
-        int id = MyShader.GetUniformLocation("tex0");
-        GL.ProgramUniform1(MyShader.Handle, id, 0);
+        int id = Shader.GetUniformLocation("tex0");
+        GL.ProgramUniform1(Shader.Handle, id, 0);
 
         base.Render();
     }

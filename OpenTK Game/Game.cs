@@ -14,14 +14,6 @@ public class Game : GameWindow
 
     private float x;
 
-    private Shader shader;
-    private Shader litShader;
-    
-    
-    private Texture tex0;
-    private Texture tex1;
-    private Texture tex2;
-
     public static readonly List<GameObject> LitObjects = new();
     public static List<GameObject> ObjectsToDestroy = new();
     public static List<GameObject> ObjectsToAdd = new();
@@ -67,41 +59,11 @@ public class Game : GameWindow
         GL.Enable(EnableCap.CullFace);
         GL.Enable(EnableCap.DepthTest);
         
-        shader = new Shader("shader.vert", "shader.frag");
-        litShader = new Shader("shader.vert", "Lit_shader.frag");
-        
-        tex0 = new Texture("container.jpg");
-        tex1 = new Texture("Bender.png");
-        tex2 = new Texture("Descole.png");
-        
         gameCam = new Camera(Vector3.UnitZ * 3, (float)Size.X / Size.Y);
-        
-        UnLitObjects.Add(new GameObject(StaticUtilities.QuadVertices, StaticUtilities.QuadIndices, new Shader("shader.vert", "WaveTutorial\\Waves.frag")));
-        UnLitObjects[0].Start();
-        UnLitObjects[0].transform.Position = Vector3.UnitX * -9;
-        
-        LitObjects.Add(new GameObject(StaticUtilities.BoxVertices, StaticUtilities.BoxIndices, litShader));
-        LitObjects[0].Start();
-
-        AssimpContext importer = new AssimpContext();
-        PostProcessSteps postProcessSteps = PostProcessSteps.Triangulate | PostProcessSteps.FlipUVs;
-        Scene scene = importer.ImportFile(StaticUtilities.ObjectDirectory + "Bomb.fbx", postProcessSteps);
-        LitObjects.Add(new GameObject(scene.Meshes[0].MergeMeshData(), scene.Meshes[0].GetUnsignedIndices(), litShader));
-        LitObjects[0].transform.Position = new Vector3(-2, 0, 0);
-        LitObjects[1].Start();
-        LitObjects[1].transform.Position = new Vector3(2, 0, 0);
-        LitObjects[1].transform.Rotation = new Vector3(-MathHelper.PiOver2, 0, 0);
-        
-        scene = importer.ImportFile(StaticUtilities.ObjectDirectory + "plane.fbx", postProcessSteps);
-        LitObjects.Add(new GameObject(scene.Meshes[0].MergeMeshData(), scene.Meshes[0].GetUnsignedIndices(), 
-            new Shader("WaveTutorial\\Waves.vert", "Lit_shader.frag")));
-        LitObjects[2].Start();
-        LitObjects[2].transform.Position = Vector3.UnitX * -6;
 
         new Mushroom(this);
         
         StaticUtilities.CheckError("B");
-
 
         Lights.Add(new PointLight(new Vector3(1,0,0.5f), 1));
         Lights[0].Transform.Position = Vector3.UnitX + Vector3.UnitY * 6 + Vector3.UnitZ * 3;
@@ -110,25 +72,6 @@ public class Game : GameWindow
         //light.Transform.Position
         StaticUtilities.CheckError("C");
 
-        shader.Use();
-
-        tex0.Use(TextureUnit.Texture0);
-        int id = shader.GetUniformLocation("tex0");
-        GL.ProgramUniform1(shader.Handle, id, 0);
-        
-        tex1.Use(TextureUnit.Texture1);
-        id = shader.GetUniformLocation("tex1");
-        GL.ProgramUniform1(shader.Handle, id, 1);
-
-        litShader.Use(); 
-        tex0.Use(TextureUnit.Texture0);
-        id = litShader.GetUniformLocation("tex0");
-        GL.ProgramUniform1(litShader.Handle, id, 0);
-        
-        tex1.Use(TextureUnit.Texture1);
-        id = litShader.GetUniformLocation("tex1");
-        GL.ProgramUniform1(litShader.Handle, id, 1);
-        
         string audioFilePath = StaticUtilities.MusicDirectory + "Descole.wav";
         audioFile = new AudioFileReader(audioFilePath);
         _waveOut.Init(audioFile);
@@ -152,8 +95,6 @@ public class Game : GameWindow
             LitObjects[i].Dispose(true);    
         }
 
-        shader.Dispose();
-
         base.OnUnload();
     }
 
@@ -171,23 +112,7 @@ public class Game : GameWindow
         view = gameCam.GetViewMatrix();
         projection = gameCam.GetProjectionMatrix();
         
-        tex0.Use(TextureUnit.Texture0);
-        tex1.Use(TextureUnit.Texture1);
-        tex2.Use(TextureUnit.Texture2);
-        
-        shader.Use();
-        int getCpuColor = shader.GetUniformLocation("uniformColor");
         x += (float) args.Time;
-        
-        GL.Uniform4(getCpuColor, new Color4((float) x, 0f, 0f, 1.0f));
-        
-        UnLitObjects[0].MyShader.Use();
-        int idx = UnLitObjects[0].MyShader.GetUniformLocation("time");
-        GL.Uniform1(idx, x);
-        
-        LitObjects[2].MyShader.Use();
-        idx = LitObjects[2].MyShader.GetUniformLocation("time");
-        GL.Uniform1(idx, x);
 
         StaticUtilities.CheckError("B");
         
@@ -195,10 +120,11 @@ public class Game : GameWindow
         {
             unlit.Render();
         }
+        
         foreach (GameObject lit in LitObjects)
         {
             int id;
-            lit.MyShader.Use();
+            lit.Shader.Use();
             
             for (int i = 0; i < Lights.Count; i++)
             {
@@ -206,23 +132,23 @@ public class Game : GameWindow
                 PointLightDefinition[1] = i.ToString();
                 string merged = string.Concat(PointLightDefinition);
                 
-                id = lit.MyShader.GetUniformLocation(merged + "lightColor");
+                id = lit.Shader.GetUniformLocation(merged + "lightColor");
                 GL.Uniform3(id, currentLight.Color);
                 
                 StaticUtilities.CheckError("A");
                 
-                id = lit.MyShader.GetUniformLocation(merged + "lightPosition");
+                id = lit.Shader.GetUniformLocation(merged + "lightPosition");
                 GL.Uniform3(id, currentLight.Transform.Position);
                 
                 StaticUtilities.CheckError("B");
                 
-                id = lit.MyShader.GetUniformLocation(merged + "lightIntensity");
+                id = lit.Shader.GetUniformLocation(merged + "lightIntensity");
                 GL.Uniform1(id, currentLight.Intensity);
                 
                 StaticUtilities.CheckError("C");
             }
             
-            id = lit.MyShader.GetUniformLocation("pointLightCount");
+            id = lit.Shader.GetUniformLocation("pointLightCount");
             GL.Uniform1(id, Lights.Count);
             
             lit.Render();

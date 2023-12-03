@@ -20,11 +20,11 @@ public class Bullet : GameObject
         
         Vertices = scene.Meshes[0].MergeMeshData();
         Indices = scene.Meshes[0].GetUnsignedIndices();
-        MyShader = new Shader("shader.vert", "Bullet_shader.frag");
+        Shader = new Shader("shader.vert", "Bullet_shader.frag");
         
         tex.Use(TextureUnit.Texture0);
-        int id = MyShader.GetUniformLocation("tex");
-        GL.ProgramUniform1(MyShader.Handle, id, 2);
+        int id = Shader.GetUniformLocation("tex");
+        GL.ProgramUniform1(Shader.Handle, id, 2);
 
         Game.LitObjects.Add(this);
         transform.Rotation = new Vector3(-MathHelper.PiOver2, 0, 0);

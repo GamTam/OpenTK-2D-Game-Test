@@ -12,13 +12,13 @@ public class GameObject
     private int elementBufferObject;
 
     protected uint[] Indices;
-    public Shader MyShader;
+    public Shader Shader;
     protected float[] Vertices;
 
     public GameObject(float [] vertices, uint[] indices, Shader shader)
     {
         Indices = indices; 
-        MyShader = shader;
+        Shader = shader;
         Vertices = vertices;
         StaticUtilities.CheckError("1");
     }
@@ -34,7 +34,7 @@ public class GameObject
         vertexArrayObject = GL.GenVertexArray();
         GL.BindVertexArray(vertexArrayObject);
 
-        int id = MyShader.GetAttribLocation("aPosition");
+        int id = Shader.GetAttribLocation("aPosition");
         GL.VertexAttribPointer(id, 3, VertexAttribPointerType.Float, false, 8 * sizeof(float), 0);
         GL.EnableVertexAttribArray(id);
 
@@ -43,7 +43,7 @@ public class GameObject
         GL.EnableVertexAttribArray(id);
         StaticUtilities.CheckError("3");
 
-        id = MyShader.GetAttribLocation("UVs");
+        id = Shader.GetAttribLocation("UVs");
         GL.VertexAttribPointer(id, 2, VertexAttribPointerType.Float, false, 8 * sizeof(float), 6 * sizeof(float));
         GL.EnableVertexAttribArray(id);
 
@@ -57,16 +57,16 @@ public class GameObject
 
     public virtual void Render()
     {
-        MyShader.Use();
+        Shader.Use();
         
-        int id = MyShader.GetUniformLocation("model");
+        int id = Shader.GetUniformLocation("model");
         GL.UniformMatrix4(id, true, ref transform.GetMatrix);
-        id = MyShader.GetUniformLocation("view");
+        id = Shader.GetUniformLocation("view");
         GL.UniformMatrix4(id, true, ref Game.view);
-        id = MyShader.GetUniformLocation("projection");
+        id = Shader.GetUniformLocation("projection");
         GL.UniformMatrix4(id, true, ref Game.projection);
         
-        id = MyShader.GetUniformLocation("viewPos");
+        id = Shader.GetUniformLocation("viewPos");
         GL.Uniform3(id, Game.gameCam.Position);
         
         StaticUtilities.CheckError("render");
@@ -83,6 +83,7 @@ public class GameObject
         GL.DeleteBuffer(elementBufferObject);
         GL.DeleteBuffer(vertexBufferObject);
         GL.DeleteVertexArray(vertexArrayObject);
+        Shader.Dispose();
     }
     
     public virtual void OnDestroy() {}
