@@ -63,7 +63,7 @@ public class Camera
     public Matrix4 GetProjectionMatrix(bool twoDimensional=true)
     {
         if (twoDimensional)
-            return Matrix4.CreateOrthographic(Game.WindowSize.X / 100f, Game.WindowSize.Y / 100f, -20, 20);
+            return Matrix4.CreateOrthographic(Game.WindowSize.X, Game.WindowSize.Y, -20000, 20000);
         
         return Matrix4.CreatePerspectiveFieldOfView(_fov, AspectRatio, 0.01f, 100f);
     }

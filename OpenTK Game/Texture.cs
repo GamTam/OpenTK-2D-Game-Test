@@ -1,4 +1,5 @@
 using OpenTK.Graphics.OpenGL4;
+using OpenTK.Mathematics;
 using StbImageSharp;
 
 namespace Open_TK_Tut_1;
@@ -6,6 +7,7 @@ namespace Open_TK_Tut_1;
 public class Texture
 {
     public readonly int Handle; // Binding ID into program
+    public Vector3 Size;
 
     public Texture(string filePath)
     {
@@ -14,9 +16,12 @@ public class Texture
 
         Use();
 
-        using (Stream stream = File.OpenRead(StaticUtilities.TextureDirectory + filePath))
+        using (Stream stream = File.OpenRead(StaticUtilities.TextureDirectory + filePath + ".png"))
         {
             ImageResult img = ImageResult.FromStream(stream, ColorComponents.RedGreenBlueAlpha);
+
+            Size = new Vector3(img.Width * 2, img.Height * 2, 1);
+            
             GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, img.Width, img.Height, 0, PixelFormat.Rgba, PixelType.UnsignedByte, img.Data);
         }
         
@@ -28,10 +33,8 @@ public class Texture
         GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)TextureWrapMode.Repeat); // X
         GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)TextureWrapMode.Repeat); // Y
         
-        
         //Mip Mapping
         GL.GenerateMipmap(GenerateMipmapTarget.Texture2D);
-
     }
 
     public void Use(TextureUnit unit = TextureUnit.Texture0)
@@ -39,7 +42,4 @@ public class Texture
         GL.ActiveTexture(unit);
         GL.BindTexture(TextureTarget.Texture2D, Handle);
     }
-
-    
-
 }

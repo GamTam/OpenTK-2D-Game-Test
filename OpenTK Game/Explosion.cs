@@ -18,17 +18,15 @@ public class Explosion : GameObject
     
     private WaveOutEvent _waveOut = new WaveOutEvent();
     
-    Texture boom = new Texture("Explosion/explosion_0.png");
+    Texture boom = new Texture("Explosion/explosion_0");
     
-    public Explosion(Game game, float[] vertices=null, uint[] indices=null, Shader shader=null) : base(vertices, indices, shader)
+    public Explosion(Game game, bool start=true) : base(game, start)
     {
-        Vertices = StaticUtilities.QuadVertices;
-        Indices = StaticUtilities.QuadIndices;
-        Shader = new Shader("shader.vert", "shader.frag");
+        _mainTex = boom;
 
-        Game.LitObjects.Add(this);
-        transform.Position = new Vector3(0, 0, 0);
-        transform.Scale = new Vector3(1, 1, 1);
+        Game.UnLitObjects.Add(this);
+        transform.Position = new Vector3(transform.Position.X, transform.Position.Y, 1f);
+        transform.Scale = new Vector3(_mainTex.Size.X, _mainTex.Size.Y, 1);
 
         _game = game;
         
@@ -36,8 +34,6 @@ public class Explosion : GameObject
         AudioFileReader audioFile = new AudioFileReader(audioFilePath);
         _waveOut.Init(audioFile);
         _waveOut.Play();
-
-        Start();
     }
 
     public override void Update(FrameEventArgs args)
@@ -50,7 +46,7 @@ public class Explosion : GameObject
 
             if (_currentImg < _imgCount)
             {
-                boom = new Texture($"Explosion/explosion_{_currentImg}.png");
+                _mainTex = new Texture($"Explosion/explosion_{_currentImg}");
                 _animTimer = 0f;
             }
             else
@@ -58,14 +54,5 @@ public class Explosion : GameObject
                 Destroy(this);
             }
         }
-    }
-    
-    public override void Render()
-    {
-        boom.Use(TextureUnit.Texture0);
-        int id = Shader.GetUniformLocation("tex0");
-        GL.ProgramUniform1(Shader.Handle, id, 0);
-
-        base.Render();
     }
 }

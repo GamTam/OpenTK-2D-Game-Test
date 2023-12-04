@@ -1,4 +1,5 @@
 using OpenTK.Graphics.OpenGL4;
+using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;
 
 namespace Open_TK_Tut_1;
@@ -14,17 +15,34 @@ public class GameObject
     protected uint[] Indices;
     public Shader Shader;
     protected float[] Vertices;
+    
+    public Texture _mainTex = new Texture("Descole");
+    protected Game _game;
 
-    public GameObject(float [] vertices, uint[] indices, Shader shader)
+    public bool ShowHitBox;
+
+    private bool _started;
+
+    public GameObject(Game game, bool start=true)
     {
-        Indices = indices; 
-        Shader = shader;
-        Vertices = vertices;
+        Vertices = StaticUtilities.QuadVertices;
+        Indices = StaticUtilities.QuadIndices;
+        Shader = new Shader("shader.vert", "shader.frag");
+        
+        Game.UnLitObjects.Add(this);
+        transform.Position = Game.gameCam.Position;
+        transform.Scale = new Vector3(512, 384, 0);
         StaticUtilities.CheckError("1");
+
+        _game = game;
+        if (start) Start();
     }
 
     public void Start()
     {
+        if (_started) return;
+        _started = true;
+        
         //VBO
         vertexBufferObject = GL.GenBuffer();
         GL.BindBuffer(BufferTarget.ArrayBuffer, vertexBufferObject);
@@ -55,11 +73,21 @@ public class GameObject
             BufferUsageHint.StaticDraw);
     }
 
+    public void UpdateTexture(string texture)
+    {
+        _mainTex = new Texture(texture);
+        transform.Scale = _mainTex.Size;
+    }
+
     public virtual void Render()
     {
+        _mainTex.Use(TextureUnit.Texture0);
+        int id = Shader.GetUniformLocation("tex0");
+        GL.ProgramUniform1(Shader.Handle, id, 0);
+        
         Shader.Use();
         
-        int id = Shader.GetUniformLocation("model");
+        id = Shader.GetUniformLocation("model");
         GL.UniformMatrix4(id, true, ref transform.GetMatrix);
         id = Shader.GetUniformLocation("view");
         GL.UniformMatrix4(id, true, ref Game.view);

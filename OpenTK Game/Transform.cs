@@ -46,7 +46,6 @@ public class Transform
         GetMatrix *= Matrix4.CreateRotationY(_rotation.Y);
         GetMatrix *= Matrix4.CreateRotationZ(_rotation.Z);
         GetMatrix *= Matrix4.CreateTranslation(_position);
-
     }
 
 
