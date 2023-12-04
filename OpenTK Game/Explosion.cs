@@ -20,15 +20,18 @@ public class Explosion : GameObject
     
     Texture boom = new Texture("Explosion/explosion_0");
     
-    public Explosion(Game game, bool start=true) : base(game, start)
+    public Explosion(Game game, bool start=false) : base(game, start)
     {
         _mainTex = boom;
-
-        Game.UnLitObjects.Add(this);
-        transform.Position = new Vector3(transform.Position.X, transform.Position.Y, 1f);
-        transform.Scale = new Vector3(_mainTex.Size.X, _mainTex.Size.Y, 1);
-
+        
         _game = game;
+    }
+
+    public override void Start()
+    {
+        base.Start();
+        
+        transform.Scale = new Vector3(_mainTex.Size.X, _mainTex.Size.Y, 1);
         
         string audioFilePath = StaticUtilities.SoundDirectory + "explosion.wav";
         AudioFileReader audioFile = new AudioFileReader(audioFilePath);

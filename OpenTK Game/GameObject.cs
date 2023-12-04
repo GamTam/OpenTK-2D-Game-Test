@@ -26,26 +26,30 @@ public class GameObject
 
     private bool _started;
 
-    public GameObject(Game game, bool start=true)
+    public GameObject(Game game, bool start=false)
     {
-        Vertices = StaticUtilities.QuadVertices;
-        Indices = StaticUtilities.QuadIndices;
-        Shader = new Shader("shader.vert", "shader.frag");
-        
-        Game.UnLitObjects.Add(this);
-        transform.Position = Game.gameCam.Position;
-        transform.Position += Vector3.UnitZ * Game.UnLitObjects.Count; 
-        transform.Scale = new Vector3(512, 384, 0);
+        // transform.Position = Game.gameCam.Position;
+        // transform.Position += Vector3.UnitZ * Game.UnLitObjects.Count; 
+        // transform.Scale = new Vector3(512, 384, 0);
         StaticUtilities.CheckError("1");
 
         _game = game;
         if (start) Start();
     }
 
-    public void Start()
+    public virtual void Start()
     {
         if (_started) return;
         _started = true;
+        
+        Vertices = StaticUtilities.QuadVertices;
+        Indices = StaticUtilities.QuadIndices;
+        Shader = new Shader("shader.vert", "shader.frag");
+        
+        transform.Position = Game.gameCam.Position;
+        transform.Position += Vector3.UnitZ * Game.UnLitObjects.Count; 
+        
+        Game.UnLitObjects.Add(this);
         
         //VBO
         vertexBufferObject = GL.GenBuffer();

@@ -59,12 +59,12 @@ public class Game : GameWindow
         gameCam.Yaw = -90;
         gameCam.Pitch = 0;
         
-        GameObject bg = new GameObject(this);
-        bg.UpdateTexture("Title Screen");
+        GameObject bg = new GameObject(this, true);
+        bg.UpdateTexture("Layton's Office");
         
-        FadeIn gradient = new FadeIn(this);
-        gradient.UpdateTexture("Title Gradient");
-        gradient.FadeInSpeed = 2.5f;
+        // FadeIn gradient = new FadeIn(this, true);
+        // gradient.UpdateTexture("Title Gradient");
+        // gradient.FadeInSpeed = 2.5f;
 
         StaticUtilities.CheckError("B");
         
@@ -141,12 +141,10 @@ public class Game : GameWindow
             Title = "Descole: The Video Game";
             
             Player descole = new Player(this);
-            descole.transform.Position =
-                new Vector3(descole.transform.Position.X, descole._mainTex.Size.Y, descole.transform.Position.Z);
+            GameObject obj = Instantiate(descole, new Vector2(gameCam.Position.X, descole._mainTex.Size.Y));
 
             Explosion explosion = new Explosion(this);
-            explosion.transform.Position = new Vector3(descole.transform.Position.X, descole.transform.Position.Y, descole.transform.Position.Z + 1);
-            explosion.transform.Scale = Vector3.One * 500f;
+            Instantiate(explosion, new Vector3(obj.transform.Position.X, obj.transform.Position.Y, obj.transform.Position.Z + 1), Vector3.One * 500f);
             
             _musicManager.Play("Descole");
         }
@@ -166,13 +164,51 @@ public class Game : GameWindow
     }
     
 
-protected override void OnMouseWheel(MouseWheelEventArgs e)
+    protected override void OnMouseWheel(MouseWheelEventArgs e)
     {
         base.OnMouseWheel(e);
 
         gameCam.Fov -= e.OffsetY;
     }
-    
-    
+
+    public static GameObject Instantiate(GameObject obj, Vector2? pos = null, Vector2? scale = null,
+        Vector2? rot = null)
+    {
+        obj.Start();
+
+        Vector2 realPos;
+        Vector2 realRot;
+        Vector2 realScale;
+
+        if (pos == null) realPos = Vector2.Zero;
+        else realPos = (Vector2) pos;
+        
+        if (rot == null) realRot = Vector2.Zero;
+        else realRot = (Vector2) rot;
+        
+        if (scale == null) realScale = new Vector2(obj._mainTex.Size.X, obj._mainTex.Size.Y);
+        else realScale = (Vector2) scale;
+        
+        obj.transform.Position = new Vector3(realPos.X, realPos.Y, UnLitObjects.Count);
+        obj.transform.Rotation = new Vector3(realRot.X, realRot.Y, 0);
+        obj.transform.Scale = new Vector3(obj._mainTex.Size.X, obj._mainTex.Size.Y, 1);
+
+        return obj;
+    }
+
+    public static GameObject Instantiate(GameObject obj, Vector3? pos = null, Vector3? scale = null, Vector3? rot = null)
+    {
+        obj.Start();
+        
+        if (pos == null) pos = Vector3.Zero;
+        if (rot == null) rot = Vector3.Zero;
+        if (scale == null) scale = obj._mainTex.Size;
+        
+        obj.transform.Position = (Vector3) pos;
+        obj.transform.Rotation = (Vector3) rot;
+        obj.transform.Scale = (Vector3) scale;
+
+        return obj;
+    }
    
 }
