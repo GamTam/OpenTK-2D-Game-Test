@@ -9,12 +9,15 @@ public class TitleScreenFadeTimer : GameObject
     private float _titleTime = 4.438f;
     private float _subTime = 13.337f;
     private float _enterTime = 22.236f;
+    private float _fadeOutTime = 5002f;
+    private float _loadSceneTime = 5005f;
     
     private float _timer = 0f;
 
     private bool _spawnedLogo;
     private bool _spawnedSubLogo;
     private bool _spawnedEnter;
+    private bool _spawnedFadeOut;
 
     private FadeIn _title;
     private FadeIn _subTitle;
@@ -47,7 +50,7 @@ public class TitleScreenFadeTimer : GameObject
         {
             _fadingOut = true;
 
-            _timer = 500000f;
+            _timer = 5000f;
             Game.SoundManager.Play("startGame");
             Game.MusicManager.Stop();
 
@@ -100,6 +103,20 @@ public class TitleScreenFadeTimer : GameObject
                 _flash.FadeInSpeed = 20;
                 _flash._square = true;
             }
+        }
+
+        if (_timer > _fadeOutTime && _fadingOut && !_spawnedFadeOut)
+        {
+            _spawnedFadeOut = true;
+            FadeIn fadeIn = new FadeIn() { FadeInSpeed = 1f };
+            GameObject obj = Game.Instantiate(fadeIn, new Vector3(512, 384, 50f));
+            obj.UpdateTexture("Black Screen");
+            obj.transform.Position += Vector3.UnitZ * 4;
+        }
+
+        if (_timer > _loadSceneTime && _fadingOut)
+        {
+            _game.Close();
         }
         
         if (_game.KeyboardState.IsKeyPressed(Keys.F) && !_fadingOut)
