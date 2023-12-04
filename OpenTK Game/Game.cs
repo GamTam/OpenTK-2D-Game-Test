@@ -62,6 +62,12 @@ public class Game : GameWindow
         GameObject bg = new GameObject(this);
         bg.UpdateTexture("Layton's Office");
 
+        Player player = new Player(this);
+        player.transform.Position = gameCam.Position;
+        player.transform.Position += Vector3.UnitZ * 3;
+        player.transform.Position =
+            new Vector3(player.transform.Position.X, player._mainTex.Size.Y, player.transform.Position.Z);
+
         StaticUtilities.CheckError("B");
         
         _musicManager.Play("Keera");
@@ -131,16 +137,6 @@ public class Game : GameWindow
         }
 
         const float cameraSpeed = 1.5f;
-
-        if (KeyboardState.IsKeyDown(Keys.A))
-        {
-            gameCam.Position -= gameCam.Right * cameraSpeed * (float)args.Time; // Left
-        }
-
-        if (KeyboardState.IsKeyDown(Keys.D))
-        {
-            gameCam.Position += gameCam.Right * cameraSpeed * (float)args.Time; // Right
-        }
 
         if (KeyboardState.IsKeyDown(Keys.F))
         {

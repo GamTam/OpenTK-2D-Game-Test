@@ -19,7 +19,8 @@ public class GameObject
     public Texture _mainTex = new Texture("Descole");
     protected Game _game;
 
-    public bool ShowHitBox;
+    protected bool FlipX;
+    protected bool FlipY;
 
     private bool _started;
 
@@ -85,8 +86,11 @@ public class GameObject
         int id = Shader.GetUniformLocation("tex0");
         GL.ProgramUniform1(Shader.Handle, id, 0);
         
-        Shader.Use();
+        id = Shader.GetUniformLocation("flip");
+        GL.ProgramUniform2(Shader.Handle, id, new Vector2(FlipX ? -1f : 1f, FlipY ? -1f : 1f));
         
+        Shader.Use();
+
         id = Shader.GetUniformLocation("model");
         GL.UniformMatrix4(id, true, ref transform.GetMatrix);
         id = Shader.GetUniformLocation("view");
