@@ -4,11 +4,13 @@ using OpenTK.Windowing.GraphicsLibraryFramework;
 
 namespace Open_TK_Tut_1;
 
-public class Player : GameObject
+public class TitleScreenDescole : GameObject
 {
-    private float _moveSpeed = 400f;
+    private float _moveSpeed = 400;
+
+    private Vector3 realPos;
     
-    public Player(Game game = null, bool start = false) : base(game, start)
+    public TitleScreenDescole(Game game = null, bool start = false) : base(game, start)
     {
         UpdateTexture("Descole DS");
         Alpha = 1;
@@ -16,21 +18,23 @@ public class Player : GameObject
 
     public override void Start(bool overrideTransform = false)
     {
-        base.Start(true);
-        // UpdateTexture("Descole DS");
+        base.Start(false);
+        UpdateTexture("Descole DS");
+        transform.Position = new Vector3(Game.gameCam.Position.X, _mainTex.Size.Y, Game.UnLitObjects.Count);
+        realPos = transform.Position;
     }
 
     public override void Update(FrameEventArgs args)
     {
         if (_game.KeyboardState.IsKeyDown(Keys.A))
         {
-            transform.Position -= Vector3.UnitX * _moveSpeed * (float) args.Time;
+            realPos -= Vector3.UnitX * _moveSpeed * (float) args.Time;
             FlipX = false;
         }
         
         if (_game.KeyboardState.IsKeyDown(Keys.D))
         {
-            transform.Position += Vector3.UnitX * _moveSpeed * (float) args.Time;
+            realPos += Vector3.UnitX * _moveSpeed * (float) args.Time;
             FlipX = true;
         }
 
@@ -44,5 +48,7 @@ public class Player : GameObject
             Alpha -= (float) args.Time;
             if (Alpha < 0) Alpha = 0;
         }
+
+        transform.Position = new Vector3(MathF.Round(realPos.X / 4f) * 4f, realPos.Y, realPos.Z);
     }
 }

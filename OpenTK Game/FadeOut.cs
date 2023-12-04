@@ -2,16 +2,16 @@
 
 namespace Open_TK_Tut_1;
 
-public class FadeIn : GameObject
+public class FadeOut : GameObject
 {
     public float FadeInSpeed = 5f;
     public bool FadedIn = false;
 
     public float _fadeInTimer;
     
-    public FadeIn(Game game = null, bool start = false) : base(game, start)
+    public FadeOut(Game game = null, bool start = false) : base(game, start)
     {
-        Alpha = 0f;
+        Alpha = 1f;
     }
 
     public override void Update(FrameEventArgs args)
@@ -26,6 +26,6 @@ public class FadeIn : GameObject
             _fadeInTimer += (float) args.Time;
         }
         
-        Alpha = _fadeInTimer / FadeInSpeed;
+        Alpha = 1 - (_fadeInTimer / FadeInSpeed);
     }
 }

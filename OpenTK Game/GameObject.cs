@@ -48,7 +48,7 @@ public class GameObject
             transform.Position += Vector3.UnitZ * Game.UnLitObjects.Count;
         }
         
-        Game.UnLitObjects.Add(this);
+        Game.ObjectsToAdd.Add(this);
         
         //VBO
         vertexBufferObject = GL.GenBuffer();

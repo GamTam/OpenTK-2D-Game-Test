@@ -28,6 +28,7 @@ public class Game : GameWindow
     private Vector2 previousMousePos;
 
     public static MusicManager MusicManager = new MusicManager();
+    public static SoundManager SoundManager = new SoundManager();
 
     private Scene TitleScreen = new Scene()
     {
@@ -44,10 +45,15 @@ public class Game : GameWindow
             {
                 Object = new FadeIn()
                 {
-                    FadeInSpeed = 2.5f
+                    FadeInSpeed = 3f
                 },
                 ObjPos = new Vector2(512, 384),
                 ObjTexture = "Title Gradient"
+            },
+            
+            new SceneObj()
+            {
+                Object = new TitleScreenFadeTimer()
             }
         },
         
@@ -151,25 +157,19 @@ public class Game : GameWindow
 
         MusicManager.Update();
 
+        foreach (GameObject obj in ObjectsToAdd)
+        {
+            UnLitObjects.Add(obj);
+        }
+
+        ObjectsToAdd = new List<GameObject>();
+
         if (KeyboardState.IsKeyDown(Keys.Escape))
         {
             Close();
         }
 
         const float cameraSpeed = 1.5f;
-
-        if (KeyboardState.IsKeyDown(Keys.F))
-        {
-            Title = "Descole: The Video Game";
-            
-            Player descole = new Player(this);
-            GameObject obj = Instantiate(descole, new Vector2(gameCam.Position.X, descole._mainTex.Size.Y));
-
-            Explosion explosion = new Explosion(this);
-            Instantiate(explosion, new Vector3(obj.transform.Position.X, obj.transform.Position.Y, obj.transform.Position.Z + 1), Vector3.One * 500f);
-            
-            MusicManager.Play("Descole");
-        }
 
         foreach (GameObject obj in UnLitObjects)
         {
@@ -194,16 +194,27 @@ public class Game : GameWindow
 
     public static void LoadScene(Scene scene)
     {
-        if (!string.IsNullOrEmpty(scene.SongToPlay)) MusicManager.Play(scene.SongToPlay);
-        
+        int i = 0;
         foreach (SceneObj obj in scene.ObjectsToSpawn)
         {
             GameObject tempObject = Instantiate(obj.Object, obj.ObjPos, obj.ObjScale, obj.ObjRot);
             if (!string.IsNullOrEmpty(obj.ObjTexture)) tempObject.UpdateTexture(obj.ObjTexture);
+            if (obj.ObjScale != Vector2.Zero) tempObject.transform.Scale = new Vector3(obj.ObjScale.X, obj.ObjScale.Y, 1);
+            tempObject.transform.Position += Vector3.UnitZ * i;
+            i++;
         }
+        
+        if (!string.IsNullOrEmpty(scene.SongToPlay)) MusicManager.Play(scene.SongToPlay);
     }
 
-    public static GameObject Instantiate(GameObject obj, Vector2? pos = null, Vector2? scale = null,
+    public static GameObject Instantiate(GameObject obj)
+    {
+        obj.Start();
+
+        return obj;
+    }
+
+    public static GameObject Instantiate(GameObject obj, Vector2 pos, Vector2? scale = null,
         Vector2? rot = null)
     {
         obj.Start();
@@ -212,8 +223,7 @@ public class Game : GameWindow
         Vector2 realRot;
         Vector2 realScale;
 
-        if (pos == null) realPos = Vector2.Zero;
-        else realPos = (Vector2) pos;
+        realPos = pos;
         
         if (rot == null) realRot = Vector2.Zero;
         else realRot = (Vector2) rot;
@@ -223,16 +233,15 @@ public class Game : GameWindow
         
         obj.transform.Position = new Vector3(realPos.X, realPos.Y, UnLitObjects.Count);
         obj.transform.Rotation = new Vector3(realRot.X, realRot.Y, 0);
-        obj.transform.Scale = new Vector3(obj._mainTex.Size.X, obj._mainTex.Size.Y, 1);
+        obj.transform.Scale = new Vector3(realScale.X, realScale.Y, 1);
 
         return obj;
     }
 
-    public static GameObject Instantiate(GameObject obj, Vector3? pos = null, Vector3? scale = null, Vector3? rot = null)
+    public static GameObject Instantiate(GameObject obj, Vector3 pos, Vector3? scale = null, Vector3? rot = null)
     {
         obj.Start();
         
-        if (pos == null) pos = Vector3.Zero;
         if (rot == null) rot = Vector3.Zero;
         if (scale == null) scale = obj._mainTex.Size;
         

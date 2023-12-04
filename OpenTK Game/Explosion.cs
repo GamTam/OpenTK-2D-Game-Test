@@ -32,11 +32,8 @@ public class Explosion : GameObject
         base.Start();
         
         transform.Scale = new Vector3(_mainTex.Size.X, _mainTex.Size.Y, 1);
-        
-        string audioFilePath = StaticUtilities.SoundDirectory + "explosion.wav";
-        AudioFileReader audioFile = new AudioFileReader(audioFilePath);
-        _waveOut.Init(audioFile);
-        _waveOut.Play();
+
+        Game.SoundManager.Play("explosion");
     }
 
     public override void Update(FrameEventArgs args)
