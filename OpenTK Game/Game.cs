@@ -1,3 +1,4 @@
+using System.Collections;
 using Assimp;
 using NAudio.Wave;
 using OpenTK.Graphics.OpenGL4;
@@ -26,7 +27,32 @@ public class Game : GameWindow
     public static Camera gameCam;
     private Vector2 previousMousePos;
 
-    private MusicManager _musicManager = new MusicManager();
+    public static MusicManager MusicManager = new MusicManager();
+
+    private Scene TitleScreen = new Scene()
+    {
+        ObjectsToSpawn = new[]
+        {
+            new SceneObj()
+            {
+                Object = new GameObject(),
+                ObjPos = new Vector2(512, 384),
+                ObjTexture = "Title Screen"
+            },
+            
+            new SceneObj()
+            {
+                Object = new FadeIn()
+                {
+                    FadeInSpeed = 2.5f
+                },
+                ObjPos = new Vector2(512, 384),
+                ObjTexture = "Title Gradient"
+            }
+        },
+        
+        SongToPlay = "Layton"
+    };
 
     private readonly string[] PointLightDefinition = new[]
     {
@@ -45,6 +71,9 @@ public class Game : GameWindow
     {
         base.OnLoad();
 
+        if (StaticUtilities.CurrentGameInstance == null) StaticUtilities.CurrentGameInstance = this;
+        else return;
+
         GL.ClearColor(0, 0, 0, 0); 
 
         //Enable blending
@@ -59,16 +88,9 @@ public class Game : GameWindow
         gameCam.Yaw = -90;
         gameCam.Pitch = 0;
         
-        GameObject bg = new GameObject(this, true);
-        bg.UpdateTexture("Layton's Office");
-        
-        // FadeIn gradient = new FadeIn(this, true);
-        // gradient.UpdateTexture("Title Gradient");
-        // gradient.FadeInSpeed = 2.5f;
+        LoadScene(TitleScreen);
 
         StaticUtilities.CheckError("B");
-        
-        _musicManager.Play("Layton");
 
         foreach (GameObject tempObj in LitObjects)
         {
@@ -127,7 +149,7 @@ public class Game : GameWindow
     {
         base.OnUpdateFrame(args);
 
-        _musicManager.Update();
+        MusicManager.Update();
 
         if (KeyboardState.IsKeyDown(Keys.Escape))
         {
@@ -146,7 +168,7 @@ public class Game : GameWindow
             Explosion explosion = new Explosion(this);
             Instantiate(explosion, new Vector3(obj.transform.Position.X, obj.transform.Position.Y, obj.transform.Position.Z + 1), Vector3.One * 500f);
             
-            _musicManager.Play("Descole");
+            MusicManager.Play("Descole");
         }
 
         foreach (GameObject obj in UnLitObjects)
@@ -162,13 +184,23 @@ public class Game : GameWindow
 
         ObjectsToDestroy = new();
     }
-    
 
     protected override void OnMouseWheel(MouseWheelEventArgs e)
     {
         base.OnMouseWheel(e);
 
         gameCam.Fov -= e.OffsetY;
+    }
+
+    public static void LoadScene(Scene scene)
+    {
+        if (!string.IsNullOrEmpty(scene.SongToPlay)) MusicManager.Play(scene.SongToPlay);
+        
+        foreach (SceneObj obj in scene.ObjectsToSpawn)
+        {
+            GameObject tempObject = Instantiate(obj.Object, obj.ObjPos, obj.ObjScale, obj.ObjRot);
+            if (!string.IsNullOrEmpty(obj.ObjTexture)) tempObject.UpdateTexture(obj.ObjTexture);
+        }
     }
 
     public static GameObject Instantiate(GameObject obj, Vector2? pos = null, Vector2? scale = null,

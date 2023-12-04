@@ -16,7 +16,7 @@ public class GameObject
     public Shader Shader;
     protected float[] Vertices;
     
-    public Texture _mainTex = new Texture("Descole");
+    public Texture _mainTex;
     protected Game _game;
 
     protected bool FlipX;
@@ -26,28 +26,27 @@ public class GameObject
 
     private bool _started;
 
-    public GameObject(Game game, bool start=false)
+    public GameObject(Game game=null, bool start=false)
     {
-        // transform.Position = Game.gameCam.Position;
-        // transform.Position += Vector3.UnitZ * Game.UnLitObjects.Count; 
-        // transform.Scale = new Vector3(512, 384, 0);
-        StaticUtilities.CheckError("1");
-
-        _game = game;
+        _game = StaticUtilities.CurrentGameInstance;
         if (start) Start();
     }
 
-    public virtual void Start()
+    public virtual void Start(bool overrideTransform = false)
     {
         if (_started) return;
         _started = true;
-        
+
         Vertices = StaticUtilities.QuadVertices;
         Indices = StaticUtilities.QuadIndices;
         Shader = new Shader("shader.vert", "shader.frag");
         
-        transform.Position = Game.gameCam.Position;
-        transform.Position += Vector3.UnitZ * Game.UnLitObjects.Count; 
+        if (!overrideTransform) {
+            UpdateTexture("Descole");
+
+            transform.Position = Game.gameCam.Position;
+            transform.Position += Vector3.UnitZ * Game.UnLitObjects.Count;
+        }
         
         Game.UnLitObjects.Add(this);
         
@@ -79,6 +78,12 @@ public class GameObject
         GL.BindBuffer(BufferTarget.ElementArrayBuffer, elementBufferObject);
         GL.BufferData(BufferTarget.ElementArrayBuffer, Indices.Length * sizeof(uint), Indices,
             BufferUsageHint.StaticDraw);
+    }
+    
+    public void UpdateTexture(Texture texture)
+    {
+        _mainTex = texture;
+        transform.Scale = _mainTex.Size;
     }
 
     public void UpdateTexture(string texture)

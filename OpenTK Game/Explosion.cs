@@ -20,14 +20,14 @@ public class Explosion : GameObject
     
     Texture boom = new Texture("Explosion/explosion_0");
     
-    public Explosion(Game game, bool start=false) : base(game, start)
+    public Explosion(Game game = null, bool start=false) : base(game, start)
     {
         _mainTex = boom;
         
         _game = game;
     }
 
-    public override void Start()
+    public override void Start(bool overrideTransform = false)
     {
         base.Start();
         

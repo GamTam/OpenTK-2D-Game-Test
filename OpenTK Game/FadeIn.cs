@@ -9,7 +9,7 @@ public class FadeIn : GameObject
 
     private float _fadeInTimer;
     
-    public FadeIn(Game game, bool start = false) : base(game, start)
+    public FadeIn(Game game = null, bool start = false) : base(game, start)
     {
         Alpha = 0f;
     }

@@ -8,15 +8,16 @@ public class Player : GameObject
 {
     private float _moveSpeed = 400f;
     
-    public Player(Game game, bool start = false) : base(game, start)
+    public Player(Game game = null, bool start = false) : base(game, start)
     {
         UpdateTexture("Descole DS");
         Alpha = 1;
     }
 
-    public override void Start()
+    public override void Start(bool overrideTransform = false)
     {
-        base.Start();
+        base.Start(true);
+        // UpdateTexture("Descole DS");
     }
 
     public override void Update(FrameEventArgs args)

@@ -13,6 +13,8 @@ public static class StaticUtilities
     public static readonly string MusicDirectory = MainDirectory + "Audio\\Music\\";
     public static readonly string SoundDirectory = MainDirectory + "Audio\\Sound\\";
 
+    public static Game CurrentGameInstance;
+
     public static float MusicVolume = 1f;
 
     //This runs as soon as the project loads.
