@@ -11,6 +11,7 @@ public class Player : GameObject
     public Player(Game game, bool start = true) : base(game, start)
     {
         UpdateTexture("Descole DS");
+        Alpha = 1;
     }
 
     public override void Update(FrameEventArgs args)
@@ -25,6 +26,17 @@ public class Player : GameObject
         {
             transform.Position += Vector3.UnitX * _moveSpeed * (float) args.Time;
             FlipX = true;
+        }
+
+        if (_game.KeyboardState.IsKeyDown(Keys.W))
+        {
+            Alpha += (float) args.Time;
+            if (Alpha > 1) Alpha = 1;
+        } 
+        else if (_game.KeyboardState.IsKeyDown(Keys.S))
+        {
+            Alpha -= (float) args.Time;
+            if (Alpha < 0) Alpha = 0;
         }
     }
 }

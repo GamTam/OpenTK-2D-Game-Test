@@ -23,6 +23,13 @@ public class MusicManager
             Name = "Keera",
             StartPoint = 3.453860f,
             LoopPoint = 80.590078f
+        },
+        
+        new Music()
+        {
+            Name = "Layton",
+            StartPoint = 7.928472f,
+            LoopPoint = 216.815329f
         }
     };
 
@@ -58,7 +65,7 @@ public class MusicManager
         string audioFilePath = StaticUtilities.MusicDirectory + name + ".wav";
         _audioFile = new AudioFileReader(audioFilePath);
         _waveOut.Init(_audioFile);
-        _waveOut.Volume = volume;
+        _waveOut.Volume = volume * StaticUtilities.MusicVolume;
         _waveOut.Play();
     }
 

@@ -54,23 +54,21 @@ public class Game : GameWindow
         GL.Enable(EnableCap.CullFace);
         GL.Enable(EnableCap.DepthTest);
         
-        gameCam = new Camera(new Vector3(), (float)WindowSize.X / WindowSize.Y);
+        gameCam = new Camera(new Vector3(), (float) WindowSize.X / WindowSize.Y);
         gameCam.Position = new Vector3(WindowSize.X / 2f, WindowSize.Y / 2f, 0);
         gameCam.Yaw = -90;
         gameCam.Pitch = 0;
         
         GameObject bg = new GameObject(this);
-        bg.UpdateTexture("Layton's Office");
-
-        Player player = new Player(this);
-        player.transform.Position = gameCam.Position;
-        player.transform.Position += Vector3.UnitZ * 3;
-        player.transform.Position =
-            new Vector3(player.transform.Position.X, player._mainTex.Size.Y, player.transform.Position.Z);
+        bg.UpdateTexture("Title Screen");
+        
+        FadeIn gradient = new FadeIn(this);
+        gradient.UpdateTexture("Title Gradient");
+        gradient.FadeInSpeed = 2.5f;
 
         StaticUtilities.CheckError("B");
         
-        _musicManager.Play("Keera");
+        _musicManager.Play("Layton");
 
         foreach (GameObject tempObj in LitObjects)
         {
@@ -142,12 +140,12 @@ public class Game : GameWindow
         {
             Title = "Descole: The Video Game";
             
-            GameObject descole = new GameObject(this);
-            descole.UpdateTexture("Descole DS");
-            descole.transform.Position = new Vector3(descole.transform.Position.X, descole._mainTex.Size.Y, 1);
+            Player descole = new Player(this);
+            descole.transform.Position =
+                new Vector3(descole.transform.Position.X, descole._mainTex.Size.Y, descole.transform.Position.Z);
 
             Explosion explosion = new Explosion(this);
-            explosion.transform.Position = new Vector3(descole.transform.Position.X, descole.transform.Position.Y, 2);
+            explosion.transform.Position = new Vector3(descole.transform.Position.X, descole.transform.Position.Y, descole.transform.Position.Z + 1);
             explosion.transform.Scale = Vector3.One * 500f;
             
             _musicManager.Play("Descole");

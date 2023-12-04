@@ -22,6 +22,8 @@ public class GameObject
     protected bool FlipX;
     protected bool FlipY;
 
+    public float Alpha = 1;
+
     private bool _started;
 
     public GameObject(Game game, bool start=true)
@@ -32,6 +34,7 @@ public class GameObject
         
         Game.UnLitObjects.Add(this);
         transform.Position = Game.gameCam.Position;
+        transform.Position += Vector3.UnitZ * Game.UnLitObjects.Count; 
         transform.Scale = new Vector3(512, 384, 0);
         StaticUtilities.CheckError("1");
 
@@ -85,6 +88,9 @@ public class GameObject
         _mainTex.Use(TextureUnit.Texture0);
         int id = Shader.GetUniformLocation("tex0");
         GL.ProgramUniform1(Shader.Handle, id, 0);
+        
+        id = Shader.GetUniformLocation("alpha");
+        GL.ProgramUniform1(Shader.Handle, id, Alpha);
         
         id = Shader.GetUniformLocation("flip");
         GL.ProgramUniform2(Shader.Handle, id, new Vector2(FlipX ? -1f : 1f, FlipY ? -1f : 1f));
