@@ -8,7 +8,7 @@ uniform vec4 uniformColor;
 
 uniform sampler2D tex0;
 uniform vec2 flip = vec2(1, 1);
-uniform float alpha = 1f;
+uniform float alpha = 1;
 
 in vec2 UV0;
 in vec3 Normals;

@@ -26,6 +26,7 @@ public class TitleScreenFadeTimer : GameObject
     private FadeOut _fadeOut;
 
     private bool _fadingOut = false;
+    private bool _pressedEnter = false;
     
     public TitleScreenFadeTimer()
     {
@@ -36,8 +37,8 @@ public class TitleScreenFadeTimer : GameObject
     {
         base.Start(false);
         _fadeOut = new FadeOut() {FadeInSpeed = 2.5f};
+        _fadeOut.UpdateTexture("Black Screen");
         GameObject obj = Game.Instantiate(_fadeOut, new Vector2(512, 384));
-        obj.UpdateTexture("Black Screen");
         obj.transform.Position += Vector3.UnitZ * 4;
     }
 
@@ -45,14 +46,24 @@ public class TitleScreenFadeTimer : GameObject
     {
         _game = StaticUtilities.CurrentGameInstance;
         _timer += (float) args.Time;
+
+        int rand = new Random().Next(5000);
+        
+        if (rand == 24) Game.Instantiate(new TitleWater(), new Vector3(1100f, (new Random().Next(53) * 4) - 2, 0.5f));
         
         if (_game.KeyboardState.IsKeyPressed(Keys.Enter) && !_fadingOut)
         {
-            _fadingOut = true;
-
+            _pressedEnter = true;
+            
+            if (_timer > _enterTime)
+            {
+                _fadingOut = true;
+                
+                Game.SoundManager.Play("startGame");
+                Game.MusicManager.Stop();
+            }
+            
             _timer = 5000f;
-            Game.SoundManager.Play("startGame");
-            Game.MusicManager.Stop();
 
             if (!_fadeOut.FadedIn)
             {
@@ -75,7 +86,7 @@ public class TitleScreenFadeTimer : GameObject
             GameObject obj = Game.Instantiate(_title, new Vector3(512, 692, 20), new Vector3(297, 46, 1));
             obj._mainTex = new Texture("Logo");
             
-            if (_fadingOut) _title._fadeInTimer = 100000f;
+            if (_pressedEnter) _title._fadeInTimer = 100000f;
         }
         
         if (_timer > _subTime && !_spawnedSubLogo)
@@ -85,7 +96,7 @@ public class TitleScreenFadeTimer : GameObject
             GameObject obj = Game.Instantiate(_subTitle, new Vector3(512, 580, 20), new Vector3(247, 47, 20));
             obj._mainTex = new Texture("SubLogo");
             
-            if (_fadingOut) _subTitle._fadeInTimer = 100000f;
+            if (_pressedEnter) _subTitle._fadeInTimer = 100000f;
         }
         
         if (_timer > _enterTime && !_spawnedEnter)
@@ -102,6 +113,10 @@ public class TitleScreenFadeTimer : GameObject
             {
                 _flash.FadeInSpeed = 20;
                 _flash._square = true;
+            } 
+            else if (_pressedEnter)
+            {
+                _flash._fadeInTimer = MathHelper.PiOver2;
             }
         }
 
@@ -109,8 +124,8 @@ public class TitleScreenFadeTimer : GameObject
         {
             _spawnedFadeOut = true;
             FadeIn fadeIn = new FadeIn() { FadeInSpeed = 1f };
+            fadeIn.UpdateTexture("Black Screen");
             GameObject obj = Game.Instantiate(fadeIn, new Vector3(512, 384, 50f));
-            obj.UpdateTexture("Black Screen");
             obj.transform.Position += Vector3.UnitZ * 4;
         }
 
@@ -121,7 +136,7 @@ public class TitleScreenFadeTimer : GameObject
         
         if (_game.KeyboardState.IsKeyPressed(Keys.F) && !_fadingOut)
         {
-            _game.Title = "Descole: The Video Game";
+            _game.Title = "The Descole Game";
             
             TitleScreenDescole descole = new TitleScreenDescole(_game);
             GameObject obj = Game.Instantiate(descole, new Vector2(Game.gameCam.Position.X, descole._mainTex.Size.Y));

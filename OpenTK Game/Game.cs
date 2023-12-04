@@ -43,6 +43,13 @@ public class Game : GameWindow
             
             new SceneObj()
             {
+                Object = new GameObject(),
+                ObjPos = new Vector2(512, 384),
+                ObjTexture = "Title Screen_fg"
+            },
+            
+            new SceneObj()
+            {
                 Object = new FadeIn()
                 {
                     FadeInSpeed = 3f
@@ -139,6 +146,8 @@ public class Game : GameWindow
 
         StaticUtilities.CheckError("B");
         
+        UnLitObjects = UnLitObjects.OrderBy(o=>o.transform.Position.X).ToList();
+        UnLitObjects = UnLitObjects.OrderBy(o=>-o.transform.Position.Y).ToList();
         UnLitObjects = UnLitObjects.OrderBy(o=>o.transform.Position.Z).ToList();
         
         foreach (GameObject unlit in UnLitObjects)
@@ -245,6 +254,7 @@ public class Game : GameWindow
         if (rot == null) rot = Vector3.Zero;
         if (scale == null) scale = obj._mainTex.Size;
         
+        obj.RealPos = (Vector3) pos;
         obj.transform.Position = (Vector3) pos;
         obj.transform.Rotation = (Vector3) rot;
         obj.transform.Scale = (Vector3) scale;

@@ -7,7 +7,7 @@ public class FlashAlpha : GameObject
 {
     public float FadeInSpeed = 1f;
 
-    private float _fadeInTimer;
+    public float _fadeInTimer;
     public bool _square;
     
     public FlashAlpha(Game game = null, bool start = false) : base(game, start)

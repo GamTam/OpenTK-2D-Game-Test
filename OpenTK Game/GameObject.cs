@@ -25,6 +25,7 @@ public class GameObject
     public float Alpha = 1;
 
     private bool _started;
+    public Vector3 RealPos;
 
     public GameObject(Game game=null, bool start=false)
     {
@@ -32,7 +33,7 @@ public class GameObject
         if (start) Start();
     }
 
-    public virtual void Start(bool overrideTransform = false)
+    public virtual void Start(bool overrideTransform = true)
     {
         if (_started) return;
         _started = true;
