@@ -18,7 +18,7 @@ public class TitleScreenDescole : GameObject
 
     public override void Start(bool overrideTransform = false)
     {
-        base.Start(false);
+        base.Start(true);
         UpdateTexture("Descole DS");
         transform.Position = new Vector3(Game.gameCam.Position.X, _mainTex.Size.Y, transform.Position.Z);
         realPos = transform.Position;

@@ -15,4 +15,5 @@ public struct SceneObj
     public Vector2 ObjRot;
     public Vector2 ObjScale;
     public string ObjTexture;
+    public float Depth;
 }

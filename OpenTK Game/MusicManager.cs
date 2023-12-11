@@ -30,6 +30,13 @@ public class MusicManager
             Name = "Layton",
             StartPoint = 7.928472f,
             LoopPoint = 216.815329f
+        },
+        
+        new Music()
+        {
+            Name = "Lobby_JFA",
+            StartPoint = 3.556763f,
+            LoopPoint = 41.957054f
         }
     };
 

@@ -4,17 +4,29 @@ using OpenTK.Windowing.Common;
 
 namespace Open_TK_Tut_1;
 
+public struct  Rect
+{
+    public int X;
+    public int Y;
+    public int Width;
+    public int Height;
+}
+
 public class GameObject
 {
     public Transform transform = new Transform(); // Every gameobject has a transform
+    public Rect HitBox = new Rect();
+    public string Tag;
 
     private int vertexBufferObject;
     private int vertexArrayObject;
     private int elementBufferObject;
 
     protected uint[] Indices;
+    protected uint[] IndicesDebug;
     public Shader Shader;
     protected float[] Vertices;
+    protected float[] VerticesDebug;
     
     public Texture _mainTex;
     protected Game _game;
@@ -43,10 +55,12 @@ public class GameObject
         Shader = new Shader("shader.vert", "shader.frag");
         
         if (!overrideTransform) {
-            UpdateTexture("Descole");
+            UpdateTexture(Game.DefaultTex);
 
             transform.Position = Game.gameCam.Position;
             transform.Position += Vector3.UnitZ * Game.UnLitObjects.Count;
+
+            UpdateHitBox();
         }
         
         Game.ObjectsToAdd.Add(this);
@@ -93,6 +107,14 @@ public class GameObject
         transform.Scale = _mainTex.Size;
     }
 
+    public void UpdateHitBox()
+    {
+        HitBox.X = (int) (transform.Position.X - (transform.Scale.X / 2f));
+        HitBox.Y = (int) (transform.Position.Y - (transform.Scale.Y / 2f));
+        HitBox.Width = (int) transform.Scale.X;
+        HitBox.Height = (int) transform.Scale.Y;
+    }
+
     public virtual void Render()
     {
         _mainTex.Use(TextureUnit.Texture0);
@@ -132,6 +154,17 @@ public class GameObject
         GL.DeleteBuffer(vertexBufferObject);
         GL.DeleteVertexArray(vertexArrayObject);
         Shader.Dispose();
+    }
+
+    public bool IsColliding(GameObject obj)
+    {
+        if (HitBox.X + HitBox.Width >= obj.HitBox.X &&     // r1 right edge past r2 left
+            HitBox.X <= obj.HitBox.X + obj.HitBox.Width &&       // r1 left edge past r2 right
+            HitBox.Y + HitBox.Height >= obj.HitBox.Y &&       // r1 top edge past r2 bottom
+            HitBox.Y <= obj.HitBox.Y + obj.HitBox.Height) {       // r1 bottom edge past r2 top
+            return true;
+        }
+        return false;
     }
     
     public virtual void OnDestroy() {}

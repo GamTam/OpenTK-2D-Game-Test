@@ -133,7 +133,7 @@ public class TitleScreenFadeTimer : GameObject
 
         if (_timer > _loadSceneTime && _fadingOut)
         {
-            _game.Close();
+            Game.LoadScene(Game.GameScene);
         }
         
         if (_game.KeyboardState.IsKeyPressed(Keys.F) && !_fadingOut)

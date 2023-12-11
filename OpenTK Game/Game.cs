@@ -30,7 +30,9 @@ public class Game : GameWindow
     public static MusicManager MusicManager = new MusicManager();
     public static SoundManager SoundManager = new SoundManager();
 
-    private Scene TitleScreen = new Scene()
+    public static Texture DefaultTex;
+    
+    public static readonly Scene TitleScreen = new Scene()
     {
         ObjectsToSpawn = new[]
         {
@@ -67,6 +69,35 @@ public class Game : GameWindow
         SongToPlay = "Layton"
     };
 
+    public static readonly Scene GameScene = new Scene()
+    {
+        ObjectsToSpawn = new []
+        {
+            new SceneObj()
+            {
+                Object = new Background(),
+                ObjPos = new Vector2(512, 384),
+                ObjTexture = "StartingRoom"
+            },
+            
+            new SceneObj()
+            {
+                Object = new Player(),
+                ObjPos = new Vector2(512, 384)
+            },
+            
+            new SceneObj()
+            {
+                Object = new FadeOut() {FadeInSpeed = 2.5f},
+                ObjPos = new Vector2(512, 384),
+                ObjTexture = "Black Screen",
+                Depth = 5000f
+            }
+        },
+        
+        SongToPlay = "Lobby_JFA"
+    };
+    
     private readonly string[] PointLightDefinition = new[]
     {
         "pointLights[",
@@ -100,8 +131,11 @@ public class Game : GameWindow
         gameCam.Position = new Vector3(WindowSize.X / 2f, WindowSize.Y / 2f, 0);
         gameCam.Yaw = -90;
         gameCam.Pitch = 0;
+
+        DefaultTex = new Texture("Descole");
         
-        LoadScene(TitleScreen);
+        //LoadScene(TitleScreen);
+        LoadScene(GameScene);
 
         StaticUtilities.CheckError("B");
 
@@ -183,6 +217,7 @@ public class Game : GameWindow
         foreach (GameObject obj in UnLitObjects)
         {
             obj.Update(args);
+            obj.UpdateHitBox();
         }
 
         foreach (GameObject obj in ObjectsToDestroy)
@@ -201,15 +236,31 @@ public class Game : GameWindow
         gameCam.Fov -= e.OffsetY;
     }
 
+    public static void Unload()
+    {
+        foreach (GameObject obj in UnLitObjects)
+        {
+            obj.Dispose();
+        }
+
+        UnLitObjects = new List<GameObject>();
+        
+        gameCam.Position = new Vector3(WindowSize.X / 2f, WindowSize.Y / 2f, 0);
+    }
+
     public static void LoadScene(Scene scene)
     {
+        Unload();
+        
         int i = 0;
         foreach (SceneObj obj in scene.ObjectsToSpawn)
         {
-            GameObject tempObject = Instantiate(obj.Object, obj.ObjPos, obj.ObjScale, obj.ObjRot);
+            GameObject tempObject = Instantiate(obj.Object);
             if (!string.IsNullOrEmpty(obj.ObjTexture)) tempObject.UpdateTexture(obj.ObjTexture);
             if (obj.ObjScale != Vector2.Zero) tempObject.transform.Scale = new Vector3(obj.ObjScale.X, obj.ObjScale.Y, 1);
-            tempObject.transform.Position += Vector3.UnitZ * i;
+            if (obj.ObjPos != Vector2.Zero) tempObject.transform.Position = new Vector3(obj.ObjPos.X, obj.ObjPos.Y, 0);
+            if (obj.ObjRot != Vector2.Zero) tempObject.transform.Rotation = new Vector3(obj.ObjRot.X, obj.ObjRot.Y, 0);
+            tempObject.transform.Position += obj.Depth == 0 ? Vector3.UnitZ * i : Vector3.UnitZ * obj.Depth;
             i++;
         }
         

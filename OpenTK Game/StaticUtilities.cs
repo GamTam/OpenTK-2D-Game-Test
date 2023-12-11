@@ -15,7 +15,8 @@ public static class StaticUtilities
 
     public static Game CurrentGameInstance;
 
-    public static float MusicVolume = 1f;
+    public static float MusicVolume = 0f;
+    public static bool Debug = true;
 
     //This runs as soon as the project loads.
     static StaticUtilities()

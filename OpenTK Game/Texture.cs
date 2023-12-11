@@ -8,6 +8,7 @@ public class Texture
 {
     public readonly int Handle; // Binding ID into program
     public Vector3 Size;
+    public string Name;
 
     public Texture(string filePath)
     {
@@ -35,6 +36,8 @@ public class Texture
         
         //Mip Mapping
         GL.GenerateMipmap(GenerateMipmapTarget.Texture2D);
+
+        Name = filePath;
     }
 
     public void Use(TextureUnit unit = TextureUnit.Texture0)
