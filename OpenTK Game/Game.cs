@@ -19,6 +19,7 @@ public class Game : GameWindow
     public static List<GameObject> ObjectsToAdd = new();
     public static List<GameObject> UnLitObjects = new();
     public static List<PointLight> Lights = new();
+    public static List<Enemy> Enemies = new();
 
     public static Vector2 WindowSize;
     public static Matrix4 view;
@@ -77,7 +78,8 @@ public class Game : GameWindow
             {
                 Object = new Background(),
                 ObjPos = new Vector2(512, 384),
-                ObjTexture = "StartingRoom"
+                ObjTexture = "StartingRoom",
+                Depth = -5000f
             },
             
             new SceneObj()

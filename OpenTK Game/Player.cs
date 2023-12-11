@@ -13,12 +13,18 @@ public class Player : GameObject
     
     private float _animTime = 0.175f;
     private float _animTimer;
+    private float FlashSpeed = 60;
+    private float _flashTimer;
     
     private int _currentImg = 0;
     private readonly int _imgCount = 4;
 
     private Texture[] _currentAnim;
     private Vector3 _prevPos;
+    Random _rand = new Random();
+    private float _timeSinceStart = 0;
+
+    private float HP = 3;
     
     private static Texture[] _animUp = new[]
     {
@@ -60,6 +66,7 @@ public class Player : GameObject
         UpdateTexture("Chars/Layton/d0");
         _currentAnim = _animDown;
         _game = StaticUtilities.CurrentGameInstance;
+        Tag = "Player";
     }
     
     public override void Update(FrameEventArgs args)
@@ -81,7 +88,26 @@ public class Player : GameObject
         if (_game.KeyboardState.IsKeyDown(Keys.Left)) shootVector.X -= 1;
         if (_game.KeyboardState.IsKeyDown(Keys.Right)) shootVector.X += 1;
 
+        if (_game.KeyboardState.IsKeyPressed(Keys.G)) Game.Instantiate(new Enemy(), new Vector2(512, 384));
+
         #endregion
+
+        int num = _rand.Next(100000);
+
+        _timeSinceStart += (float) (args.Time / 2f);
+        Console.WriteLine(10 + _timeSinceStart / 2);
+        if (num < 10 + _timeSinceStart / 2)
+        {
+            Vector2 enemyPos = new Vector2(0, 0);
+
+            do
+            {
+                enemyPos = new Vector2(_rand.Next(-50, 1100), _rand.Next(-50, 1100));
+            } while (Math.Sqrt(Math.Pow(enemyPos.X - transform.Position.X, 2) +
+                               Math.Pow(enemyPos.Y - transform.Position.Y, 2)) < 150f);
+                
+            Game.Instantiate(new Enemy(), enemyPos);
+        }
 
         if (shootVector != Vector2.Zero)
         {
@@ -90,7 +116,7 @@ public class Player : GameObject
             if (_fireTimer <= 0)
             {
                 _fireTimer = _fireRate;
-                Game.Instantiate(new Bullet() {Dir = shootVector}, transform.Position);
+                Game.Instantiate(new Bullet() {Dir = Vector2.Normalize(shootVector)}, transform.Position);
             }
         }
         else
@@ -103,6 +129,15 @@ public class Player : GameObject
 
         #region Animation
 
+        _flashTimer -= (float) args.Time;
+        if (_flashTimer > 0)
+        {
+            float flash = (float) (MathHelper.Sin((_flashTimer - MathHelper.PiOver2 / 2f) * FlashSpeed) / 2) + 0.5f;
+
+            if (flash < 0.5) Alpha = 1;
+            else Alpha = 0;
+        } else Alpha = 1;
+        
         if (moveVector != Vector2.Zero) _animTimer += (float) args.Time;
         else _animTimer = 0;
         
@@ -144,6 +179,17 @@ public class Player : GameObject
 
         #endregion
         
-        transform.Position = new Vector3(transform.Position.X, transform.Position.Y, transform.Position.Y - transform.Scale.Y / 2);
+        transform.Position = new Vector3(transform.Position.X, transform.Position.Y,
+            250 - (transform.Position.Y - transform.Scale.Y / 2));
+    }
+
+    public void Hit()
+    {
+        if (_flashTimer > 0) return;
+
+        HP -= 1;
+        _flashTimer = 1.25f;
+        
+        if (HP < 0) _game.Close();
     }
 }

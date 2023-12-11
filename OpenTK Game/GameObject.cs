@@ -16,7 +16,7 @@ public class GameObject
 {
     public Transform transform = new Transform(); // Every gameobject has a transform
     public Rect HitBox = new Rect();
-    public string Tag;
+    public string Tag = "";
 
     private int vertexBufferObject;
     private int vertexArrayObject;

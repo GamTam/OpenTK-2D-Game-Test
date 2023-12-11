@@ -8,8 +8,6 @@ namespace Open_TK_Tut_1;
 
 public class TitleWater : GameObject
 {
-    public Game _game;
-
     private float _animTime = 0.25f;
     private float _animTimer;
 
