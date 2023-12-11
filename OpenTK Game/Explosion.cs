@@ -31,7 +31,7 @@ public class Explosion : GameObject
     {
         base.Start();
         
-        transform.Scale = new Vector3(_mainTex.Size.X, _mainTex.Size.Y, 1);
+        transform.Scale = new Vector3(_mainTex.Size.X, _mainTex.Size.Y, transform.Position.Z);
 
         Game.SoundManager.Play("explosion");
     }

@@ -11,6 +11,7 @@ public class SoundManager
     {
         string audioFilePath = StaticUtilities.SoundDirectory + sound + ".wav";
         AudioFileReader audioFile = new AudioFileReader(audioFilePath);
+        _waveOut = new WaveOutEvent();
         _waveOut.Init(audioFile);
         _waveOut.Play();
     }

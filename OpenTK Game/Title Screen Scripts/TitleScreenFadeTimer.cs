@@ -27,6 +27,8 @@ public class TitleScreenFadeTimer : GameObject
 
     private bool _fadingOut = false;
     private bool _pressedEnter = false;
+
+    private int _descoleCount = 0;
     
     public TitleScreenFadeTimer()
     {
@@ -125,7 +127,7 @@ public class TitleScreenFadeTimer : GameObject
             _spawnedFadeOut = true;
             FadeIn fadeIn = new FadeIn() { FadeInSpeed = 1f };
             fadeIn.UpdateTexture("Black Screen");
-            GameObject obj = Game.Instantiate(fadeIn, new Vector3(512, 384, 50f));
+            GameObject obj = Game.Instantiate(fadeIn, new Vector3(512, 384, 500f));
             obj.transform.Position += Vector3.UnitZ * 4;
         }
 
@@ -139,10 +141,11 @@ public class TitleScreenFadeTimer : GameObject
             _game.Title = "The Descole Game";
             
             TitleScreenDescole descole = new TitleScreenDescole(_game);
-            GameObject obj = Game.Instantiate(descole, new Vector2(Game.gameCam.Position.X, descole._mainTex.Size.Y));
+            _descoleCount += 1;
+            GameObject obj = Game.Instantiate(descole, new Vector3(Game.gameCam.Position.X, descole._mainTex.Size.Y, 20 + _descoleCount));
 
             Explosion explosion = new Explosion(_game);
-            Game.Instantiate(explosion, new Vector3(obj.transform.Position.X, obj.transform.Position.Y, obj.transform.Position.Z + 1), Vector3.One * 500f);
+            Game.Instantiate(explosion, new Vector3(obj.transform.Position.X, obj.transform.Position.Y, 21 + _descoleCount), Vector3.One * 500f);
             
             Game.MusicManager.Play("Descole");
         }

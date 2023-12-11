@@ -1,25 +1,31 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\lucca\\RiderProjects\\OpenTK-2D-Game-Test\\OpenTK Game\\OpenTK Game.csproj": {}
+    "D:\\Documents\\VSCode Projects\\Graphics Game\\OpenTK Game\\OpenTK Game.csproj": {}
   },
   "projects": {
-    "C:\\Users\\lucca\\RiderProjects\\OpenTK-2D-Game-Test\\OpenTK Game\\OpenTK Game.csproj": {
+    "D:\\Documents\\VSCode Projects\\Graphics Game\\OpenTK Game\\OpenTK Game.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\lucca\\RiderProjects\\OpenTK-2D-Game-Test\\OpenTK Game\\OpenTK Game.csproj",
+        "projectUniqueName": "D:\\Documents\\VSCode Projects\\Graphics Game\\OpenTK Game\\OpenTK Game.csproj",
         "projectName": "OpenTK Game",
-        "projectPath": "C:\\Users\\lucca\\RiderProjects\\OpenTK-2D-Game-Test\\OpenTK Game\\OpenTK Game.csproj",
-        "packagesPath": "C:\\Users\\lucca\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\lucca\\RiderProjects\\OpenTK-2D-Game-Test\\OpenTK Game\\obj\\",
+        "projectPath": "D:\\Documents\\VSCode Projects\\Graphics Game\\OpenTK Game\\OpenTK Game.csproj",
+        "packagesPath": "C:\\Users\\DaCambra Family\\.nuget\\packages\\",
+        "outputPath": "D:\\Documents\\VSCode Projects\\Graphics Game\\OpenTK Game\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
         "configFilePaths": [
-          "C:\\Users\\lucca\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\DaCambra Family\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "net6.0"
         ],
         "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -71,7 +77,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.414\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.417\\RuntimeIdentifierGraph.json"
         }
       }
     }

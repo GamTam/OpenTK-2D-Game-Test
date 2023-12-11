@@ -20,7 +20,7 @@ public class TitleScreenDescole : GameObject
     {
         base.Start(false);
         UpdateTexture("Descole DS");
-        transform.Position = new Vector3(Game.gameCam.Position.X, _mainTex.Size.Y, 10);
+        transform.Position = new Vector3(Game.gameCam.Position.X, _mainTex.Size.Y, transform.Position.Z);
         realPos = transform.Position;
     }
 
