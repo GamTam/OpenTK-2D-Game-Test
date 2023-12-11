@@ -103,7 +103,7 @@ public class Game : GameWindow
             }
         },
         
-        SongToPlay = "Lobby_JFA"
+        SongToPlay = "WitchChase"
     };
     
     private readonly string[] PointLightDefinition = new[]
@@ -142,8 +142,8 @@ public class Game : GameWindow
 
         DefaultTex = new Texture("Descole");
         
-        //LoadScene(TitleScreen);
-        LoadScene(GameScene);
+        LoadScene(TitleScreen);
+        //LoadScene(GameScene);
 
         StaticUtilities.CheckError("B");
 

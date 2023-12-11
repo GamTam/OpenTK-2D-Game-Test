@@ -37,6 +37,13 @@ public class MusicManager
             Name = "Lobby_JFA",
             StartPoint = 3.556763f,
             LoopPoint = 41.957054f
+        },
+        
+        new Music()
+        {
+            Name = "WitchChase",
+            StartPoint = 5.913073f,
+            LoopPoint = 68.380054f
         }
     };
 
