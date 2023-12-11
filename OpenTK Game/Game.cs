@@ -90,6 +90,12 @@ public class Game : GameWindow
             
             new SceneObj()
             {
+                Object = new RainSpawner(),
+                ObjPos = new Vector2(512, 384)
+            },
+            
+            new SceneObj()
+            {
                 Object = new FadeOut() {FadeInSpeed = 2.5f},
                 ObjPos = new Vector2(512, 384),
                 ObjTexture = "Black Screen",

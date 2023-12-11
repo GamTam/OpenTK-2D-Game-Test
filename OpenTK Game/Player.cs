@@ -95,7 +95,6 @@ public class Player : GameObject
         int num = _rand.Next(100000);
 
         _timeSinceStart += (float) (args.Time / 2f);
-        Console.WriteLine(10 + _timeSinceStart / 2);
         if (num < 10 + _timeSinceStart / 2)
         {
             Vector2 enemyPos = new Vector2(0, 0);
